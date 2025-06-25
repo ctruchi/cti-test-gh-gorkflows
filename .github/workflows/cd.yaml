@@ -4,12 +4,12 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/ci-tpl-gradle.yml
-    with:
-      gradle_command: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/run-gradle
+        with:
+          gradle_command: test
 
-  build:
-    needs: test
-    uses: ./.github/workflows/ci-tpl-gradle.yml
-    with:
-      gradle_command: build
+      - uses: ./.github/actions/run-gradle
+        with:
+          gradle_command: build
