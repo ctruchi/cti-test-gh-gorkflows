@@ -34,4 +34,5 @@ runs:
         cache-disabled: true
 
     - name: Run gradle command
+      shell: bash
       run: ./gradlew --scan ${{ inputs.gradle_command }}
