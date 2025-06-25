@@ -6,12 +6,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/run-gradle
+      - name: Test
+        uses: ./.github/actions/run-gradle
         with:
           gradle_command: test
 
-      - uses: ./.github/actions/run-gradle
+      - name: Build
+        uses: ./.github/actions/run-gradle
         with:
           gradle_command: build

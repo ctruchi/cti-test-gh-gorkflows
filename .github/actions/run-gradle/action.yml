@@ -21,17 +21,28 @@ runs:
   steps:
     - name: Collect Workflow Telemetry
       uses: catchpoint/workflow-telemetry-action@v2
+      if: ${{ env.FSH_TELEMETRY != 'true' }}
 
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         distribution: ${{ inputs.jdk_distribution }}
         java-version: ${{ inputs.jdk_version }}
+      if: ${{ env.FSH_JDK_DISTRIBUTION != inputs.jdk_distribution || env.FSH_JDK_VERSION != inputs.jdk_version }}
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
         cache-disabled: true
+      if: ${{ env.FSH_SETUP_GRADLE != 'true' }}
+
+    - name: Define internal env var
+      shell: bash
+      run: |
+        echo "FSH_TELEMETRY=true" >> "$GITHUB_ENV"
+        echo "FSH_JDK_DISTRIBUTION=${{ inputs.jdk_distribution }}" >> "$GITHUB_ENV"
+        echo "FSH_JDK_VERSION=${{ inputs.jdk_version }}" >> "$GITHUB_ENV"
+        echo "FSH_SETUP_GRADLE=true" >> "$GITHUB_ENV"
 
     - name: Run gradle command
       shell: bash
