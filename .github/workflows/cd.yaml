@@ -1,0 +1,14 @@
+name: CD
+on:
+  push
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci-tpl-gradle.yml
+    with:
+      gradle_command: test
+
+  build:
+    uses: ./.github/workflows/ci-tpl-gradle.yml
+    with:
+      gradle_command: build

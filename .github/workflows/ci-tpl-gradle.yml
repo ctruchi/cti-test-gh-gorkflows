@@ -1,0 +1,45 @@
+name: Gradle Template Workflow
+
+on:
+  workflow_call:
+    inputs:
+      gradle_command:
+        description: gradle command (everything but ./gradlew)
+        type: string
+        required: true
+      jdk_distribution:
+        required: false
+        type: string
+        description: JDK distribution (https://github.com/actions/setup-java?tab=readme-ov-file#supported-distributions)
+        default: temurin
+      jdk_version:
+        required: false
+        type: string
+        description: JDK version (https://github.com/actions/setup-java?tab=readme-ov-file#supported-version-syntax)
+        default: 21
+
+jobs:
+  build-and-docker:
+    runs-on: ${{ vars.RUNNER_TAG }}
+    steps:
+      - name: Collect Workflow Telemetry
+        uses: catchpoint/workflow-telemetry-action@v2
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ inputs.jdk_distribution }}
+          java-version: ${{ inputs.jdk_version }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+
+      - name: Run gradle command
+        env:
+          GRADLE_CACHE_PASSWORD: ${{ secrets.GRADLE_CACHE_PASSWORD }}
+        run: ./gradlew --scan ${{ inputs.gradle_command }}
