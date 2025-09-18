@@ -1,0 +1,28 @@
+name: Test Docker Cache
+
+on:
+  workflow_dispatch:
+    inputs:
+      s:
+        default: "foo"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker build ${{ inputs.target }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
